@@ -1,12 +1,45 @@
 <template>
   <div class="share">
     <p>シェア</p>
-    <textarea></textarea>
+    <textarea v-model="share"></textarea>
     <div>
-      <button>シェアする</button>
+      <button @click="send">シェアする</button>
     </div>
   </div>
 </template>
+
+<script>
+import axios from "axios";
+export default {
+  data() {
+    return {
+      share: "",
+    };
+  },
+  methods: {
+    send() {
+      if (this.share === "") {
+        alert("シェアする内容を入力してください");
+      } else {
+        axios
+          .post("https://fast-mountain-62258.herokuapp.com/api/shares/", {
+            user_id: this.$store.state.user.id,
+            share: this.share,
+          })
+          .then((response) => {
+            console.log(response);
+            alert("シェアしました");
+            this.share = "";
+            this.$router.go({
+              path: this.$router.currentRoute.path,
+              force: true,
+            });
+          });
+      }
+    },
+  },
+};
+</script>
 
 <style scoped>
 .share {
